@@ -3,7 +3,7 @@
 Proyecto desarrollado con Vue 3, Vue Router, Vuex, Bootstrap y Firebase Firestore.
 
 La aplicación permite visualizar productos desde Firebase, agregarlos a un carrito de compras y generar un resumen de pedido, guardando la compra en la base de datos.
-<br>
+
 
 📌 Características
 
@@ -72,11 +72,11 @@ src
 
 Clonar el repositorio
 
-git clone https://github.com/tuusuario/tienda-vuex-firebase.git
+git clone https://github.com/JulioHidalgo/tienda-vf.git
 
 Entrar al proyecto
 
-cd tienda-vuex-firebase
+cd tienda-vf
 
 Instalar dependencias
 
