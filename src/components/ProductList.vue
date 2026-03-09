@@ -13,7 +13,11 @@
               <h5 class="card-title">{{ p.name }}</h5>
               <p class="card-text">{{ p.description }}</p>
               <p class="fw-bold mb-3">$ {{ p.price }}</p>
-              <button class="btn btn-primary w-100" @click="add(p)">
+              <button
+                class="btn btn-primary w-100"
+                @click="add(p)"
+                :disabled="!isAuthenticated"
+              >
                 Agregar al carrito
               </button>
             </div>
@@ -33,6 +37,9 @@ export default {
     },
     loading() {
       return this.$store.state.loadingProducts;
+    },
+    isAuthenticated() {
+      return this.$store.getters.isAuthenticated;
     },
   },
   mounted() {

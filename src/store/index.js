@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
-import { db } from "../firebase";
+import { db, auth } from "../firebase";
 import { collection, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 
 export default createStore({
   state: {
@@ -8,6 +9,8 @@ export default createStore({
     cart: [], // { id, name, price, qty }
     loadingProducts: false,
     lastOrderId: null,
+    user: null,
+    authError: "",
   },
 
   getters: {
@@ -16,6 +19,12 @@ export default createStore({
     },
     totalCarrito(state) {
       return state.cart.reduce((acc, item) => acc + item.price * item.qty, 0);
+    },
+    isAuthenticated(state) {
+      return !!state.user;
+    },
+    userEmail(state) {
+      return state.user?.email || "";
     },
   },
 
@@ -46,6 +55,12 @@ export default createStore({
     ESTABLECER_ULTIMO_ID_ORDEN(state, id) {
       state.lastOrderId = id;
     },
+        SET_USER(state, user) {
+      state.user = user;
+    },
+    SET_AUTH_ERROR(state, error) {
+      state.authError = error;
+    },
   },
 
   actions: {
@@ -75,8 +90,54 @@ export default createStore({
       commit("DECREMENTAR_CANTIDAD", productId);
     },
 
+    async register({ commit }, { email, password }) {
+      try {
+        commit("SET_AUTH_ERROR", "");
+        const response = await createUserWithEmailAndPassword(auth, email, password);
+
+        commit("SET_USER", {
+          uid: response.user.uid,
+          email: response.user.email,
+        });
+      } catch (error) {
+        commit("SET_AUTH_ERROR", error.message);
+      }
+    },
+
+    async login({ commit }, { email, password }) {
+      try {
+        commit("SET_AUTH_ERROR", "");
+        const response = await signInWithEmailAndPassword(auth, email, password);
+
+        commit("SET_USER", {
+          uid: response.user.uid,
+          email: response.user.email,
+        });
+      } catch (error) {
+        commit("SET_AUTH_ERROR", error.message);
+      }
+    },
+    async logout({ commit }) {
+      await signOut(auth);
+      commit("SET_USER", null);
+      commit("LIMPIAR_CARRITO");
+    },
+
+    setUserFromSession({ commit }) {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          commit("SET_USER", {
+            uid: user.uid,
+            email: user.email,
+          });
+        } else {
+          commit("SET_USER", null);
+        }
+      });
+    },
+
     async realizarCompra({ state, getters, commit }) {
-      if (state.cart.length === 0) return;
+      if (state.cart.length === 0 || !state.user) return;
 
       // Filtrar items válidos (asegurarse de que no haya undefined)
       const validItems = state.cart.filter(item => 
@@ -87,12 +148,14 @@ export default createStore({
 
       // Guardar compra en Firestore
       const order = {
-        items: validItems.map((i) => ({
-          id: i.id,
-          name: i.name,
-          price: i.price,
-          qty: i.qty,
-          subtotal: i.price * i.qty,
+        userId: state.user.uid,
+        userEmail: state.user.email,
+        items: state.cart.map((item) => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          qty: item.qty,
+          subtotal: item.price * item.qty,
         })),
         total: getters.totalCarrito,
         createdAt: serverTimestamp(),

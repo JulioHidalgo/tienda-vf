@@ -10,6 +10,16 @@
     </nav>
 
     <div class="container my-4">
+      <AuthForm />
+
+      <div v-if="isAuthenticated" class="alert alert-info">
+        Estás navegando como <strong>{{ userEmail }}</strong>
+      </div>
+
+      <div v-else class="alert alert-secondary">
+        Inicia sesión para agregar productos y guardar tus compras.
+      </div>
+
       <div class="row g-4">
         <div class="col-lg-7">
           <ProductList />
@@ -28,13 +38,20 @@
 import ProductList from "../components/ProductList.vue";
 import ShoppingCart from "../components/ShoppingCart.vue";
 import OrderSummary from "../components/OrderSummary.vue";
+import AuthForm from "../components/AuthForm.vue";
 
 export default {
-  components: { ProductList, ShoppingCart, OrderSummary },
+  components: { ProductList, ShoppingCart, OrderSummary, AuthForm },
   computed: {
     cartCount() {
       return this.$store.getters.cantidadCarrito;
     },
+    isAuthenticated() {
+      return this.$store.getters.isAuthenticated;
+    },
+    userEmail() {
+      return this.$store.getters.userEmail;
+    }
   },
 };
 </script>
