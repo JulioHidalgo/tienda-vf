@@ -55,7 +55,7 @@ export default createStore({
     ESTABLECER_ULTIMO_ID_ORDEN(state, id) {
       state.lastOrderId = id;
     },
-        SET_USER(state, user) {
+    SET_USER(state, user) {
       state.user = user;
     },
     SET_AUTH_ERROR(state, error) {
@@ -90,38 +90,40 @@ export default createStore({
       commit("DECREMENTAR_CANTIDAD", productId);
     },
 
-    async register({ commit }, { email, password }) {
-      try {
-        commit("SET_AUTH_ERROR", "");
-        const response = await createUserWithEmailAndPassword(auth, email, password);
+async register({ commit }, { email, password }) {
+  try {
+    commit("SET_AUTH_ERROR", "");
+    const response = await createUserWithEmailAndPassword(auth, email, password);
 
-        commit("SET_USER", {
-          uid: response.user.uid,
-          email: response.user.email,
-        });
-      } catch (error) {
-        commit("SET_AUTH_ERROR", error.message);
-      }
-    },
+    commit("SET_USER", {
+      uid: response.user.uid,
+      email: response.user.email,
+    });
+  } catch (error) {
+    commit("SET_AUTH_ERROR", error.message);
+  }
+},
 
-    async login({ commit }, { email, password }) {
-      try {
-        commit("SET_AUTH_ERROR", "");
-        const response = await signInWithEmailAndPassword(auth, email, password);
+async login({ commit }, { email, password }) {
+  try {
+    commit("SET_AUTH_ERROR", "");
+    const response = await signInWithEmailAndPassword(auth, email, password);
 
-        commit("SET_USER", {
-          uid: response.user.uid,
-          email: response.user.email,
-        });
-      } catch (error) {
-        commit("SET_AUTH_ERROR", error.message);
-      }
-    },
-    async logout({ commit }) {
-      await signOut(auth);
-      commit("SET_USER", null);
-      commit("LIMPIAR_CARRITO");
-    },
+    commit("SET_USER", {
+      uid: response.user.uid,
+      email: response.user.email,
+    });
+  } catch (error) {
+    commit("SET_AUTH_ERROR", error.message);
+  }
+},
+
+async logout({ commit }) {
+  await signOut(auth);
+  commit("SET_USER", null);
+  commit("SET_AUTH_ERROR", "");
+  commit("LIMPIAR_CARRITO");
+},
 
     setUserFromSession({ commit }) {
       onAuthStateChanged(auth, (user) => {

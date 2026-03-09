@@ -1,23 +1,28 @@
 <template>
   <div>
-    <nav class="navbar navbar-dark bg-dark">
+    <nav class="navbar navbar-dark bg-dark shadow-sm">
       <div class="container">
         <span class="navbar-brand">Tienda</span>
-        <span class="badge bg-light text-dark">
-          🛒 {{ cartCount }} items
-        </span>
+
+        <div class="d-flex align-items-center gap-3">
+          <span class="text-light small">
+            {{ userEmail }}
+          </span>
+
+          <span class="badge bg-light text-dark">
+            🛒 {{ cartCount }} items
+          </span>
+
+          <button class="btn btn-outline-light btn-sm" @click="logoutUser">
+            Cerrar sesión
+          </button>
+        </div>
       </div>
     </nav>
 
     <div class="container my-4">
-      <AuthForm />
-
-      <div v-if="isAuthenticated" class="alert alert-info">
-        Estás navegando como <strong>{{ userEmail }}</strong>
-      </div>
-
-      <div v-else class="alert alert-secondary">
-        Inicia sesión para agregar productos y guardar tus compras.
+      <div class="alert alert-info">
+        Bienvenido, <strong>{{ userEmail }}</strong>. Ya puedes agregar productos al carrito.
       </div>
 
       <div class="row g-4">
@@ -38,20 +43,23 @@
 import ProductList from "../components/ProductList.vue";
 import ShoppingCart from "../components/ShoppingCart.vue";
 import OrderSummary from "../components/OrderSummary.vue";
-import AuthForm from "../components/AuthForm.vue";
 
 export default {
-  components: { ProductList, ShoppingCart, OrderSummary, AuthForm },
+  name: "HomeMain",
+  components: { ProductList, ShoppingCart, OrderSummary },
   computed: {
     cartCount() {
       return this.$store.getters.cantidadCarrito;
     },
-    isAuthenticated() {
-      return this.$store.getters.isAuthenticated;
-    },
     userEmail() {
       return this.$store.getters.userEmail;
-    }
+    },
+  },
+  methods: {
+    async logoutUser() {
+      await this.$store.dispatch("logout");
+      this.$router.push("/login");
+    },
   },
 };
 </script>

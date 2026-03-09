@@ -22,6 +22,10 @@ body {
   margin-top: 0;
   background-color: #000000;
 }
+.card-header{
+  font-family: "Orbitron", sans-serif !important; 
+}
+
 
 /* Star Wars glowing titles effect */
 h1, h2, h3, h4, h5, h6, .card-header, .navbar-brand, .card-title {
