@@ -3,6 +3,7 @@
 Proyecto desarrollado con Vue 3, Vue Router, Vuex, Bootstrap y Firebase Firestore.
 
 La aplicación permite visualizar productos desde Firebase, agregarlos a un carrito de compras y generar un resumen de pedido, guardando la compra en la base de datos.
+<br>
 
 📌 Características
 
@@ -21,6 +22,7 @@ Guardado del detalle de compra en Firebase
 Componentes reutilizables
 
 Uso de cards para mostrar productos
+<br>
 
 🧱 Tecnologías utilizadas
 
@@ -41,6 +43,7 @@ JavaScript
 HTML
 
 CSS
+<br>
 
 📂 Estructura del proyecto
 src
@@ -63,6 +66,8 @@ src
 │
 ├── App.vue
 └── main.js
+
+<br>
 ⚙️ Instalación del proyecto
 
 Clonar el repositorio
@@ -84,6 +89,7 @@ npm run serve
 Abrir en el navegador
 
 http://localhost:8080
+<br>
 🔥 Configuración de Firebase
 
 Crear un proyecto en Firebase Console
@@ -139,7 +145,7 @@ Botón:
 Finalizar compra
 
 Guarda el pedido en Firebase en la colección orders.
-
+<br>
 📊 Vuex Store
 
 El estado global contiene:
@@ -215,7 +221,7 @@ Componentes en Vue
 Manejo de estado global
 
 SPA
-
+<br>
 📚 Autor
 
 Proyecto desarrollado como actividad académica de Vue.js.
